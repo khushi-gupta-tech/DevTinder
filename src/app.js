@@ -12,11 +12,37 @@ app.post("/signup", async (req, res) => {
 
   try {
     await user.save();
-    res.send("User Added successfully")
+    res.send("User Added successfully");
   } catch (err) {
-    res.status(400).send("User Added successfully"+err.message);
+    res.status(400).send("User Added successfully" + err.message);
   }
 });
+
+app.get("/user", async (req, res) => {
+  const userEmail = req.body.emailId;
+  try {
+    const users = await User.findOne({ emailId: userEmail });
+    if(users.length===0){
+       res.status(404).send("User not found")
+    }else{
+     res.send(users);
+    }
+    
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+// Feed API - get all users from the database
+app.get("/feed", async(req, res) => {
+    try{
+      const users = await User.find({})
+      res.send(users)
+    }
+    catch(err){
+      res.status(400).send("Not Found")
+    }
+});
+
 
 connectDB()
   .then(() => {
